@@ -3,11 +3,9 @@ import Twilio
 
 /// Register your application's routes here.
 func routes(_ app: Application) throws {
-    // Basic "It works" example
-    //(831) 610-0806
-    app.get { req -> EventLoopFuture<ClientResponse> in
+    app.get { req async throws -> ClientResponse in
         let call = OutgoingCall(twiml: "<Response><Say>This is Ray</Say></Response>", from: "+14054496618", to: "+16508478622")
-        return req.twilio.send(call)
+        return try await req.twilio.send(call)
     }
 
     app.post("incoming") { req -> Response in

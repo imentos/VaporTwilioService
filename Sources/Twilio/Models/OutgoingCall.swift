@@ -11,11 +11,9 @@ public struct OutgoingCall: Content {
     let twiml: String
     let from: String
     let to: String
-//    let url: String
 
     public init(twiml: String, from: String, to: String) {
         self.twiml = twiml
-//        self.url = url
         self.from = from
         self.to = to
     }

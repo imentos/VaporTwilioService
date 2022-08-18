@@ -8,25 +8,17 @@
 import Vapor
 
 public protocol CallProvider {
-    func send(_ sms: OutgoingCall) -> EventLoopFuture<ClientResponse>
+    func send(_ sms: OutgoingCall) async throws -> ClientResponse
 }
 
 extension Twilio: CallProvider {
-    public func send(_ call: OutgoingCall) -> EventLoopFuture<ClientResponse> {
+    public func send(_ call: OutgoingCall) async throws -> ClientResponse {
         guard let configuration = self.configuration else {
             fatalError("Twilio not configured. Use app.twilio.configuration = ...")
         }
-        
-        return application.eventLoopGroup.future().flatMapThrowing { _ -> HTTPHeaders in
-            let authKeyEncoded = try self.encode(accountId: configuration.accountId, accountSecret: configuration.accountSecret)
-            var headers = HTTPHeaders()
-            headers.add(name: .authorization, value: "Basic \(authKeyEncoded)")
-            return headers
-        }.flatMap { headers in
-            let twilioURI = URI(string: "https://api.twilio.com/2010-04-01/Accounts/\(configuration.accountId)/Calls.json")
-            return self.application.client.post(twilioURI, headers: headers) {
-                try $0.content.encode(call, as: .urlEncodedForm)
-            }
-        }
+        let twilioURI = URI(string: "https://api.twilio.com/2010-04-01/Accounts/\(configuration.accountId)/Calls.json")
+        return try await application.client.post(twilioURI, headers: configuration.headers, beforeSend: { req in
+            try req.content.encode(call, as: .urlEncodedForm)
+        })
     }
 }
