@@ -6,9 +6,13 @@ func routes(_ app: Application) throws {
     // Basic "It works" example
     //(831) 610-0806
     app.get { req -> EventLoopFuture<ClientResponse> in
-        let sms = OutgoingSMS(body: "Hey There", from: "+18316100806", to: "+14083688346")
-
-        return req.twilio.send(sms)
+//        let sms = OutgoingSMS(body: "Hey There", from: "+14054496618", to: "+16508478622")
+//
+//        return req.twilio.send(sms)
+        
+        let call = OutgoingCall(twiml: "<Response><Say>This is Ray</Say></Response>", from: "+14054496618", to: "+16508478622")
+//        let call = OutgoingCall(url: "http://demo.twilio.com/docs/voice.xml", from: "+14054496618", to: "+16508478622")
+        return req.twilio.send(call)
     }
 
     app.post("incoming") { req -> Response in
