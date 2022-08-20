@@ -3,6 +3,7 @@ import Twilio
 
 /// Register your application's routes here.
 func routes(_ app: Application) throws {
+
     app.get { req async throws -> ClientResponse in
         let call = OutgoingCall(
             twiml: "<Response><Say>This is Ray</Say></Response>",
