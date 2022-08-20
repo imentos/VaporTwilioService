@@ -63,9 +63,7 @@ extension Twilio {
     }
 }
 
-// MARK: Private
-
-fileprivate extension Twilio {
+extension Twilio {
     func encode(accountId: String, accountSecret: String) throws -> String {
         guard let apiKeyData = "\(accountId):\(accountSecret)".data(using: .utf8) else {
             throw TwilioError.encodingProblem
